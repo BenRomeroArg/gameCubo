@@ -1,5 +1,6 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+let bestScore = localStorage.getItem("bestScore") || 0;
 // Avión
 const plane = {    
     x: 50,
@@ -114,13 +115,13 @@ function checkEnemyCollision() {
 // Función para reiniciar el juego
 function resetGame() {
     // Puedes agregar más lógica de reinicio si es necesario
-    alert("¡Juego terminado! Puntuación: " + score);
+    //alert("¡Juego terminado! Puntuación: " + score);
     score = 0;
     plane.x = 50;
     plane.y = canvas.height / 2;
     bullets.length = 0;
     enemies.length = 0;
-    window.location.reload();
+    
 }
 // Función principal de dibujo
 function draw() {
@@ -171,14 +172,32 @@ function draw() {
     checkEnemyCollision();
     // Dibujar el marcador de puntos
     drawScore();
+    //Mejor puntuacion
+    drawBestScore();
     // Solicitar el próximo cuadro de animación
     requestAnimationFrame(draw);
 }
 // Iniciar el juego
 function start(){
+   
+    document.getElementById('startGame').style.display= 'none';
+    document.getElementById('game').style.display = 'block';
+    resetGame();
     draw();
 }
-
+//Mejor puntuacion
+function saveBestScore(){
+    if(score > bestScore){
+        bestScore = score;
+        localStorage.setItem("bestScore",bestScore);
+    }
+}
+function drawBestScore(){
+    saveBestScore();
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("BESTSCORE: "+bestScore,canvas.width -200, 30);
+}
 
 
 

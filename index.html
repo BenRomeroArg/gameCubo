@@ -7,13 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="500"></canvas>
-    <button id="start" onclick="start()">Start</button>
-    <div id="controls">
-        <button onclick="moveUp()">Up</button>
-        <button id="shoot" onclick="shoot()">Shoot</button>
-        <button onclick="moveDown()">Down</button>
+    <div id="startGame">
+        <h1>KILLCUBO</h1>
+        <button id="start" onclick="start()">Start</button>
     </div>
+    <div id="game" style="display:none;">
+        <canvas id="gameCanvas" width="480" height="500"></canvas>
+        <div id="controls">
+            <button onclick="moveUp()">Up</button>
+            <button id="shoot" onclick="shoot()">Shoot</button>
+            <button onclick="moveDown()">Down</button>
+        </div>
+    </div>
+     
   <script src="main.js"></script>
 </body>
 </html>
