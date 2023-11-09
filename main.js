@@ -1,6 +1,12 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let bestScore = localStorage.getItem("bestScore") || 0;
+let lives = 3;
+const game_over = document.getElementById('gameOver');
+game_over.addEventListener('click',()=>{
+    window.location.reload();
+
+});
 // Avión
 const plane = {    
     x: 50,
@@ -16,6 +22,15 @@ const bulletSpeed = 7;
 // Enemigos
 const enemies = [];
 const enemySpeed = 3;
+function crearEnemies(){
+    return{
+        x: canvas.width,
+        y: Math.random()*canvas.height,
+        color: 'white',
+        width: 40,
+        height: 40
+    }
+}
 // Función para dibujar el avión
 function drawPlane() {
     ctx.beginPath();
@@ -37,13 +52,16 @@ function drawBullets() {
 // Función para dibujar enemigos
 function drawEnemies() {
     enemies.forEach(enemy => {
-        ctx.beginPath();
-        ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
+        if(enemy.color !== 'red'){
+            ctx.beginPath();
+            ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
        
-        ctx.fillStyle = "#00FF00";
-        ctx.fill();
-        ctx.closePath();
+            ctx.fillStyle = enemy.color;
+            ctx.fill();
+            ctx.closePath();
+        }
     });
+   
 }
 // Escuchar eventos de teclado para controlar el avión
 document.addEventListener("keydown", (event) => {
@@ -90,12 +108,18 @@ function drawScore() {
     ctx.fillStyle = "white";
     ctx.fillText("Score: " + score, 10, 30);
 }
+function drawLives() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("Lives: " + lives,canvas.width - 300, 30);
+}
 // Función para verificar la colisión del avión con las paredes
 function checkWallCollision() {
     if (plane.y < 0 || plane.y > canvas.height - plane.height) {
         // Colisión con la parte superior o inferior del lienzo
         // Puedes personalizar esta lógica según tus necesidades
         resetGame();
+       
     }
 }
 // Función para verificar la colisión del avión con los enemigos
@@ -108,14 +132,22 @@ function checkEnemyCollision() {
             plane.y + plane.height > enemy.y
         ) {
             // Colisión con un enemigo, reiniciar el juego
+           
+            lives--;
+            console.log(lives);
             resetGame();
+            if(lives === 0){
+                //window.location.reload();
+                document.getElementById('game').style.display = 'none';
+                game_over.style.display = 'block';
+                document.body.style.background = "black";
+            }
         }
     });
 }
 // Función para reiniciar el juego
 function resetGame() {
-    // Puedes agregar más lógica de reinicio si es necesario
-    //alert("¡Juego terminado! Puntuación: " + score);
+    
     score = 0;
     plane.x = 50;
     plane.y = canvas.height / 2;
@@ -136,12 +168,7 @@ function draw() {
     });
     // Generar enemigos aleatorios
     if (Math.random() < 0.02) {
-        const enemy = {
-            x: canvas.width,
-            y: Math.random() * canvas.height,
-            width: 30,
-            height: 30
-        };
+        const enemy = crearEnemies();
         enemies.push(enemy);
     }
     // Dibujar y mover enemigos
@@ -162,15 +189,18 @@ function draw() {
                 bullets.splice(bullets.indexOf(bullet), 1);
                 enemies.splice(enemies.indexOf(enemy), 1);
                 // Incrementar puntos por impacto
+                //enemy.color = 'red';
                 score += 10;
             }
         });
     });
+    //enemies = enemies.filter(enemy => enemy.color !== 'red');
     // Verificar colisión del avión con las paredes
     checkWallCollision();
     // Verificar colisión del avión con los enemigos
     checkEnemyCollision();
-    // Dibujar el marcador de puntos
+    // Dibujar el marcador de puntos y vidas
+    drawLives();
     drawScore();
     //Mejor puntuacion
     drawBestScore();
@@ -185,6 +215,8 @@ function start(){
     resetGame();
     draw();
 }
+
+
 //Mejor puntuacion
 function saveBestScore(){
     if(score > bestScore){

@@ -8,7 +8,20 @@ body {
     height: 100vh;
     background-color: grey;
 }
-
+.title{
+  font-weight: bold;
+  font-family: 'Arial Narrow Bold', sans-serif;
+  animation: titulo 8s ease-in-out 0s infinite normal none;
+  font-stretch: expanded;
+  font-size: 2.5rem;
+}
+@keyframes titulo {
+  50%{
+    color: white;
+   
+  }
+  
+}
 canvas {
     border: 1px solid #000;
     background: black;
@@ -47,4 +60,41 @@ button{
   height: 85px;
   background: blueviolet;
   font-weight: bold;
+}
+#gameOver{
+  position: fixed;
+  
+  margin-top: 10px;
+  width: 80%;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+ 
+  border-radius: 10%;
+  
+}
+.gameOver{
+  text-align: center;
+  font-weight: 900;
+  border: red 10px solid;
+  color: blue;
+  animation: gameover 2.5s ease-in-out 0s infinite normal;
+  transition: 0.25s;
+
+  font-size: 4em;
+}
+@keyframes gameover {
+  5%{
+    color: red;
+    border-color: blue;
+  }
+  40%{
+    color: blue;
+    border-color: red;
+  }
+  80%{
+    color:red;
+    border-color: blue;
+  }
 }

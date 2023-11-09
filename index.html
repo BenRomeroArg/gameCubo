@@ -8,11 +8,14 @@
 </head>
 <body>
     <div id="startGame">
-        <h1>KILLCUBO</h1>
+        <h1 class="title">KILL-[+]-CUBO</h1>
         <button id="start" onclick="start()">Start</button>
     </div>
+    <div id="gameOver" style="display: none;">
+        <h1 class="gameOver">Game [X] Over</h1>
+    </div>
     <div id="game" style="display:none;">
-        <canvas id="gameCanvas" width="480" height="500"></canvas>
+        <canvas id="gameCanvas" width="480" height="550"></canvas>
         <div id="controls">
             <button onclick="moveUp()">Up</button>
             <button id="shoot" onclick="shoot()">Shoot</button>
