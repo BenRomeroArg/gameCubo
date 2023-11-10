@@ -9,11 +9,11 @@ game_over.addEventListener('click',()=>{
 });
 // Avión
 const plane = {    
-    x: 50,
-    y: canvas.height / 2,
+    x: canvas.width / 2,
+    y: 510,
     width: 30,
     height: 30,
-    color: "#0095DD",
+    color: "#c4c9c9ef",
     speed: 1
 };
 // Disparos
@@ -21,14 +21,14 @@ const bullets = [];
 const bulletSpeed = 7;
 // Enemigos
 const enemies = [];
-const enemySpeed = 3;
+const enemySpeed = 2.5;
 function crearEnemies(){
     return{
-        x: canvas.width,
-        y: Math.random()*canvas.height,
-        color: 'white',
-        width: 40,
-        height: 40
+        x: Math.random()* canvas.width,
+        y: 0,
+        color: 'grey',
+        width: 20,
+        height: 20
     }
 }
 // Función para dibujar el avión
@@ -44,7 +44,7 @@ function drawBullets() {
     bullets.forEach(bullet => {
         ctx.beginPath();
         ctx.rect(bullet.x, bullet.y, bullet.width, bullet.height);
-        ctx.fillStyle = "#FF0022";
+        ctx.fillStyle = "#ff0000";
         ctx.fill();
         ctx.closePath();
     });
@@ -65,16 +65,16 @@ function drawEnemies() {
 }
 // Escuchar eventos de teclado para controlar el avión
 document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowUp" && plane.y > 0) {
-        plane.y -= plane.speed;
-    } else if (event.key === "ArrowDown" && plane.y < canvas.height - plane.height) {
-        plane.y += plane.speed;
+    if (event.key === "ArrowLeft" && plane.x > 0) {
+        plane.x -= (plane.speed*3);
+    } else if (event.key === "ArrowRight" && plane.x < canvas.width - plane.width) {
+        plane.x += (plane.speed*3);
     } else if (event.key === " ") {
         // Barra espaciadora para disparar
         const bullet = {
-            x: plane.x + plane.width,
-            y: plane.y + plane.height / 2 - 5,
-            width: 10,
+            x: plane.x + plane.width / 2,
+            y: plane.y + plane.height / 2 - 10,
+            width: 5,
             height: 5
         };
         bullets.push(bullet);
@@ -82,21 +82,21 @@ document.addEventListener("keydown", (event) => {
 });
 //Control de movimientos
 function moveUp() {  
-    if (plane.y > 0) {
-        plane.y -= (plane.speed*15);
+    if (plane.x > 0) {
+        plane.x -= (plane.speed*15);
     }
 }
 function moveDown() { 
-    if (plane.y < canvas.height - plane.height) {
-        plane.y += (plane.speed*15);
+    if (plane.x < canvas.width - plane.width) {
+        plane.x += (plane.speed*15);
     }
 }
 function shoot() {
     // Barra espaciadora para disparar
     const bullet = {
-        x: plane.x + plane.width,
-        y: plane.y + plane.height / 2 - 5,
-        width: 10,
+        x: plane.x + plane.width / 2,
+        y: plane.y + plane.height / 2 - 10,
+        width: 5,
         height: 5
     };
     bullets.push(bullet);
@@ -149,8 +149,8 @@ function checkEnemyCollision() {
 function resetGame() {
     
     score = 0;
-    plane.x = 50;
-    plane.y = canvas.height / 2;
+    plane.x = canvas.width/2;
+    plane.y = 510;
     bullets.length = 0;
     enemies.length = 0;
     
@@ -164,7 +164,7 @@ function draw() {
     // Dibujar y mover disparos
     drawBullets();
     bullets.forEach(bullet => {
-        bullet.x += bulletSpeed;
+        bullet.y -= bulletSpeed;
     });
     // Generar enemigos aleatorios
     if (Math.random() < 0.02) {
@@ -174,13 +174,13 @@ function draw() {
     // Dibujar y mover enemigos
     drawEnemies();
     enemies.forEach(enemy => {
-        enemy.x -= enemySpeed;
-        setTimeout(()=>{        
-            if(enemy.color === '#ff0000'){
-                enemy.color = "grey";
-            }
-           
-        },2750);
+        enemy.y += enemySpeed;
+        enemy.width += 0.29;
+        enemy.height += 0.29;
+        setTimeout(()=>{
+            enemy.color = "#ff0000"; 
+        },2350);
+        
     });
     // Colisiones entre disparos y enemigos
     bullets.forEach(bullet => {
@@ -195,11 +195,11 @@ function draw() {
                 bullets.splice(bullets.indexOf(bullet), 1);
                 //enemies.splice(enemies.indexOf(enemy), 1);
                 // Incrementar puntos por impacto
-                //enemy.color = 'red';
-                enemy.color = "#ff0000";
-                enemy.x = 450;
-                enemy.width = 5;
-                enemy.height = 5;
+                enemy.y = 15;
+                enemy.x  =  Math.random()* canvas.width;
+                enemy.width = 1;
+               enemy.height = 1;
+               enemy.speed = 3.5;
                 score += 10;
             }
         });
@@ -220,9 +220,9 @@ function draw() {
 // Iniciar el juego
 function start(){
    
+    document.getElementById('home').style.display= 'none';
     document.getElementById('startGame').style.display= 'none';
     document.getElementById('game').style.display = 'block';
-    document.getElementById('nivelE').style.display='none';
     resetGame();
     draw();
 }
