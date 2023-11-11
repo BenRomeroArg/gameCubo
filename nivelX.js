@@ -2,6 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let bestScore = localStorage.getItem("bestScore") || 0;
 let lives = 3;
+let kill = [];
 const game_over = document.getElementById('gameOver');
 game_over.addEventListener('click',()=>{
     window.location.reload();
@@ -9,11 +10,11 @@ game_over.addEventListener('click',()=>{
 });
 // Avión
 const plane = {    
-    x: 50,
-    y: canvas.height / 2,
+    x: canvas.width / 2,
+    y: 510,
     width: 30,
     height: 30,
-    color: "#0095DD",
+    color: "#c4c9c9ef",
     speed: 1
 };
 // Disparos
@@ -21,16 +22,19 @@ const bullets = [];
 const bulletSpeed = 7;
 // Enemigos
 const enemies = [];
-const enemySpeed = 3;
+const enemySpeed = 2.15;
+
 function crearEnemies(){
     return{
-        x: canvas.width,
-        y: Math.random()*canvas.height,
-        color: 'white',
-        width: 40,
-        height: 40
+        x: Math.random()* canvas.width,
+        y: 0,
+        color: 'grey',
+        width: 27,
+        height: 18
     }
 }
+//
+
 // Función para dibujar el avión
 function drawPlane() {
     ctx.beginPath();
@@ -44,7 +48,7 @@ function drawBullets() {
     bullets.forEach(bullet => {
         ctx.beginPath();
         ctx.rect(bullet.x, bullet.y, bullet.width, bullet.height);
-        ctx.fillStyle = "#FF0022";
+        ctx.fillStyle = "#ff0000";
         ctx.fill();
         ctx.closePath();
     });
@@ -52,7 +56,7 @@ function drawBullets() {
 // Función para dibujar enemigos
 function drawEnemies() {
     enemies.forEach(enemy => {
-        if(enemy.color !== 'red'){
+        if(enemy.color !== "blue"){
             ctx.beginPath();
             ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
        
@@ -63,68 +67,65 @@ function drawEnemies() {
     });
    
 }
+//
+function killsEnemies() {
+    
+        
+            ctx.beginPath();
+            ctx.rect(kill.x, kill.y, kill.width, kill.height);
+       
+            ctx.fillStyle = kill.color;
+            ctx.fill();
+            ctx.closePath();
+       
+  
+   
+}
 // Escuchar eventos de teclado para controlar el avión
 document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowUp" && plane.y > 0) {
-        plane.y -= plane.speed;
-    } else if (event.key === "ArrowDown" && plane.y < canvas.height - plane.height) {
-        plane.y += plane.speed;
+    if (event.key === "ArrowLeft" && plane.x > 0) {
+        plane.x -= (plane.speed*3);
+       
+    } else if (event.key === "ArrowRight" && plane.x < canvas.width - plane.width) {
+        plane.x += (plane.speed*3);
+        
     } else if (event.key === " ") {
-        // Barra espaciadora para disparar
-        const bullet = {
-            x: plane.x + plane.width,
-            y: plane.y + plane.height / 2 - 5,
-            width: 10,
-            height: 5
-        };
-        bullets.push(bullet);
+       shoot();
     }
 });
 //Control de movimientos
 function moveUp() {  
-    if (plane.y > 0) {
-        plane.y -= (plane.speed*15);
+    if (plane.x > 0) {
+        plane.x -= (plane.speed*15);
     }
 }
 function moveDown() { 
-    if (plane.y < canvas.height - plane.height) {
-        plane.y += (plane.speed*15);
+    if (plane.x < canvas.width - plane.width) {
+        plane.x += (plane.speed*15);
     }
 }
-document.body.addEventListener('click',shoot);
+document.addEventListener('click',shoot);
 function shoot() {
     // Barra espaciadora para disparar
     const bullet = {
-        x: plane.x + plane.width,
-        y: plane.y + plane.height / 2 - 5,
-        width: 10,
+        x: plane.x + plane.width / 2,
+        y: plane.y + plane.height / 2 - 10,
+        width: 5,
         height: 5
     };
     bullets.push(bullet);
 }
 let score = 0;
-// Función para dibujar el marcador de puntos
-function drawScore() {
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "white";
-    ctx.fillText("Score: " + score, 10, 30);
-}
-function drawLives() {
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "white";
-    ctx.fillText("Lives: " + lives,canvas.width - 300, 30);
-}
+
 // Función para verificar la colisión del avión con las paredes
 function checkWallCollision() {
-    if (plane.y < 0 || plane.y > canvas.height - plane.height) {
-        // Colisión con la parte superior o inferior del lienzo
+    if (plane.x < 1 || (plane.x+5) > canvas.width - plane.width) {
+        // Colisión con la parte superior o inferior del lienzo       
         lives--;
-        console.log(lives);
         resetGame();
         if(lives === 0){
-           
+            
             document.getElementById('game').style.display = 'none';
-            document.getElementById('nivelX').style.display = 'none';
             game_over.style.display = 'block';
             document.body.style.background = "black";
         }
@@ -148,7 +149,6 @@ function checkEnemyCollision() {
             if(lives === 0){
                 //window.location.reload();
                 document.getElementById('game').style.display = 'none';
-                document.getElementById('nivelX').style.display = 'none';
                 game_over.style.display = 'block';
                 document.body.style.background = "black";
             }
@@ -159,8 +159,8 @@ function checkEnemyCollision() {
 function resetGame() {
     
     score = score + 0;
-    plane.x = 50;
-    plane.y = canvas.height / 2;
+    plane.x = canvas.width/2;
+    plane.y = 510;
     bullets.length = 0;
     enemies.length = 0;
     
@@ -174,24 +174,26 @@ function draw() {
     // Dibujar y mover disparos
     drawBullets();
     bullets.forEach(bullet => {
-        bullet.x += bulletSpeed;
+        bullet.y -= bulletSpeed;
     });
     // Generar enemigos aleatorios
-    if (Math.random() < 0.02) {
+    if (Math.random() < 0.03) {
         const enemy = crearEnemies();
         enemies.push(enemy);
     }
     // Dibujar y mover enemigos
     drawEnemies();
+    killsEnemies();
     enemies.forEach(enemy => {
-        enemy.x -= enemySpeed;
-        setTimeout(()=>{        
-            if(enemy.color === '#ff0000'){
-                enemy.color = "grey";
-            }
-           
-        },2750);
+        enemy.y += enemySpeed;
+        enemy.x += enemySpeed; 
+        setTimeout(()=>{
+            enemy.width += 0.23;
+            enemy.x -= enemySpeed;       
+        },1750);
+        
     });
+    
     // Colisiones entre disparos y enemigos
     bullets.forEach(bullet => {
         enemies.forEach(enemy => {
@@ -205,15 +207,29 @@ function draw() {
                 bullets.splice(bullets.indexOf(bullet), 1);
                 //enemies.splice(enemies.indexOf(enemy), 1);
                 // Incrementar puntos por impacto
-                //enemy.color = 'red';
-                enemy.color = "#ff0000";
-                enemy.x = 450;
-                enemy.width = 5;
-                enemy.height = 5;
+                enemy.y = Math.random() * (canvas.height / 2);
+                enemy.x  =  Math.random() * canvas.width;
+                enemy.width = 20;
+               enemy.height = 10;              
                 score += 10;
+                kill.push(enemy);
+               
             }
         });
-    });
+        kill.forEach(k =>{     
+            k.color = "red";
+            k.x -= 0.1;
+            k.y += 0.1;  
+            if(bullet.x < kill.x + kill.width &&
+                bullet.x + bullet.width > kill.x &&
+                bullet.y < kill.y + kill.height &&
+                bullet.y + bullet.height > kill.y){
+                    score+=15;
+                }
+            //kill.splice(kill.indexOf(k),1);
+        });
+
+    });   
     //enemies = enemies.filter(enemy => enemy.color !== 'red');
     // Verificar colisión del avión con las paredes
     checkWallCollision();
@@ -222,22 +238,20 @@ function draw() {
     // Dibujar el marcador de puntos y vidas
     drawLives();
     drawScore();
+    killScore()
     //Mejor puntuacion
     drawBestScore();
     // Solicitar el próximo cuadro de animación
     requestAnimationFrame(draw);
 }
 // Iniciar el juego
-function start(){
-   
+function start(){   
+    document.getElementById('home').style.display= 'none';
     document.getElementById('startGame').style.display= 'none';
     document.getElementById('game').style.display = 'block';
-    document.getElementById('nivelE').style.display='none';
-    document.getElementById('nivelX').style.display = 'none';
     resetGame();
     draw();
 }
-
 
 //Mejor puntuacion
 function saveBestScore(){
@@ -248,9 +262,29 @@ function saveBestScore(){
 }
 function drawBestScore(){
     saveBestScore();
+    ctx.font = "18px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("BestScore: "+bestScore,canvas.width -160, 30);
+}
+function killScore(){
+   let killN = kill.length; 
     ctx.font = "20px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText("BESTSCORE: "+bestScore,canvas.width -200, 30);
+    ctx.fillText("Kills: "+killN,canvas.width -350, 30);
+
+    
+    
+}
+// Función para dibujar el marcador de puntos
+function drawScore() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("Score: " + score, 10, 30);
+}
+function drawLives() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("Lives: " + lives,canvas.width - 260, 30);
 }
 
 

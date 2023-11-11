@@ -91,6 +91,7 @@ function moveDown() {
         plane.x += (plane.speed*15);
     }
 }
+document.body.addEventListener('click',shoot);
 function shoot() {
     // Barra espaciadora para disparar
     const bullet = {
@@ -115,10 +116,18 @@ function drawLives() {
 }
 // Función para verificar la colisión del avión con las paredes
 function checkWallCollision() {
-    if (plane.y < 0 || plane.y > canvas.height - plane.height) {
+    if (plane.x < 1 || (plane.x+5) > canvas.width - plane.width) {
         // Colisión con la parte superior o inferior del lienzo
-        // Puedes personalizar esta lógica según tus necesidades
-        resetGame();
+        
+        lives--;
+            console.log(lives);
+            resetGame();
+            if(lives === 0){
+                //window.location.reload();
+                document.getElementById('game').style.display = 'none';
+                game_over.style.display = 'block';
+                document.body.style.background = "black";
+            }
        
     }
 }
@@ -148,7 +157,7 @@ function checkEnemyCollision() {
 // Función para reiniciar el juego
 function resetGame() {
     
-    score = 0;
+    score = score + 0;
     plane.x = canvas.width/2;
     plane.y = 510;
     bullets.length = 0;

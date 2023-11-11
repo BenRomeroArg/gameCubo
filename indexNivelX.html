@@ -3,33 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KILL-CUBO</title>
+    <title>KIL-CUBO-X</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="startGame">
-        <h1 class="title">KILL-[+]-CUBO-H</h1>
+        <h1 class="title">KILL-[+]-CUBO-X</h1>
         
         <button id="start" onclick="start()">Start</button>
     </div>
-    <div id="nivelE">
-        <h1 class="title"><a class="title"href="indexNivel.html">KILL-[+]-CUBO-V</a></h1>
-    </div>
-    <div id="nivelX">
-        <h1 class="title"><a class="title"href="indexNivelX.html">KILL-[+]-CUBO-X</a></h1>
-    </div>
+    <a id="home"href="index.html">Home</a>
     <div id="gameOver" style="display: none;">
         <h1 class="gameOver">Game [X] Over</h1>
     </div>
     <div id="game" style="display:none;">
         <canvas id="gameCanvas" width="480" height="550"></canvas>
         <div id="controls">
-            <button onclick="moveUp()">Up</button>        
-            <button onclick="moveDown()">Down</button>
+            <button onclick="moveUp()">|<<</button>
             
+            <button onclick="moveDown()">>>|</button>
         </div>
     </div>
-     
-  <script src="main.js"></script>
+    <script src="nivelX.js"></script>
 </body>
 </html>
