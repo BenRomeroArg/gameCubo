@@ -122,6 +122,7 @@ function checkWallCollision() {
     if (plane.x < 1 || (plane.x+5) > canvas.width - plane.width) {
         // Colisión con la parte superior o inferior del lienzo       
         lives--;
+        window.navigator.vibrate([500]);
         resetGame();
         if(lives === 0){
             
@@ -144,6 +145,7 @@ function checkEnemyCollision() {
             // Colisión con un enemigo, reiniciar el juego
            
             lives--;
+            window.navigator.vibrate([500]);
             console.log(lives);
             resetGame();
             if(lives === 0){
@@ -210,7 +212,8 @@ function draw() {
                 enemy.y = Math.random() * (canvas.height / 2);
                 enemy.x  =  Math.random() * canvas.width;
                 enemy.width = 20;
-               enemy.height = 10;              
+               enemy.height = 10;
+               window.navigator.vibrate([100]); 
                 score += 10;
                 kill.push(enemy);
                
@@ -218,12 +221,13 @@ function draw() {
         });
         kill.forEach(k =>{     
             k.color = "red";
-            k.x -= 0.1;
-            k.y += 0.1;  
+            k.x -= 0.07;
+            k.y += 0.08;  
             if(bullet.x < kill.x + kill.width &&
                 bullet.x + bullet.width > kill.x &&
                 bullet.y < kill.y + kill.height &&
                 bullet.y + bullet.height > kill.y){
+                    window.navigator.vibrate([200]);
                     score+=15;
                 }
             //kill.splice(kill.indexOf(k),1);
