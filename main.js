@@ -120,6 +120,7 @@ function checkWallCollision() {
         // Colisión con la parte superior o inferior del lienzo
         lives--;
         console.log(lives);
+        window.navigator.vibrate([500]);
         resetGame();
         if(lives === 0){
            
@@ -143,6 +144,7 @@ function checkEnemyCollision() {
             // Colisión con un enemigo, reiniciar el juego
            
             lives--;
+            window.navigator.vibrate([500]);
             console.log(lives);
             resetGame();
             if(lives === 0){
@@ -210,6 +212,7 @@ function draw() {
                 enemy.x = 450;
                 enemy.width = 5;
                 enemy.height = 5;
+                window.navigator.vibrate([200]);
                 score += 10;
             }
         });

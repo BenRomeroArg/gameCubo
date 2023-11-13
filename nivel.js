@@ -122,6 +122,7 @@ function checkWallCollision() {
         lives--;
             console.log(lives);
             resetGame();
+            window.navigator.vibrate([500]);
             if(lives === 0){
                 //window.location.reload();
                 document.getElementById('game').style.display = 'none';
@@ -144,6 +145,7 @@ function checkEnemyCollision() {
            
             lives--;
             console.log(lives);
+            window.navigator.vibrate([500]);
             resetGame();
             if(lives === 0){
                 //window.location.reload();
@@ -209,6 +211,7 @@ function draw() {
                 enemy.width = 1;
                enemy.height = 1;
                enemy.speed = 3.5;
+               window.navigator.vibrate([200]);
                 score += 10;
             }
         });
